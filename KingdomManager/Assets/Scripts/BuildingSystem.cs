@@ -29,14 +29,14 @@ public class BuildingSystem : MonoBehaviour
  
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            InitializeWithObject(smallHouse);
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            InitializeWithObject(largeHouse);
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    InitializeWithObject(smallHouse);
+        //}
+        //if (Input.GetKeyDown(KeyCode.B))
+        //{
+        //    InitializeWithObject(largeHouse);
+        //}
         if (!objectToPlace)
         {
             return;
