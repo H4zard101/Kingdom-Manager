@@ -15,6 +15,9 @@ public class NewRTSCameraZoom : MonoBehaviour
     private Vector3 _targetPosition;
     private float _input;
 
+    public LayerMask groundLayer;
+
+    public float distance;
     private void Awake()
     {
         _targetPosition = _cameraHolder.localPosition;
@@ -30,6 +33,7 @@ public class NewRTSCameraZoom : MonoBehaviour
         Vector3 nextTargetPosition = _targetPosition + _cameraDirection * (_input * _speed);
         if(IsInBounds(nextTargetPosition)) _targetPosition = nextTargetPosition;
         _cameraHolder.localPosition = Vector3.Lerp(_cameraHolder.localPosition, _targetPosition, Time.deltaTime * _smoothing);
+        
     }
     private bool IsInBounds(Vector3 position)
     {
@@ -40,5 +44,15 @@ public class NewRTSCameraZoom : MonoBehaviour
     {
         HandleInput();
         Zoom();
+
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 1000f, groundLayer))
+        {
+            distance = hit.distance;
+        } 
     }
+
+
 }

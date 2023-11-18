@@ -12,9 +12,11 @@ public class NewRTSCamera : MonoBehaviour
     private Vector3 _targetPosition;
     private Vector3 _input;
 
+    public NewRTSCameraZoom cameraZoom;
     private void Awake()
     {
         _targetPosition = transform.position;
+        cameraZoom = GetComponentInChildren<NewRTSCameraZoom>();
     }
 
     private void HandleInput()
@@ -30,9 +32,10 @@ public class NewRTSCamera : MonoBehaviour
 
     private void Move()
     {
-        Vector3 nextTargetPosition = _targetPosition + _input * _speed;
-        if(IsInBounds(nextTargetPosition)) _targetPosition = nextTargetPosition;
-        transform.position = Vector3.Lerp(transform.position, _targetPosition, Time.deltaTime * _smoothing);
+        float speedMultiply = cameraZoom.distance / 100;
+        Vector3 nextTargetPosition = _targetPosition + _input * (_speed * speedMultiply);
+        if (IsInBounds(nextTargetPosition)) _targetPosition = nextTargetPosition;
+        transform.position = Vector3.Lerp(transform.position, _targetPosition, Time.deltaTime * _smoothing /*/ Camera.main.transform.position.y*/);
     }
 
     private bool IsInBounds(Vector3 position)
@@ -44,6 +47,7 @@ public class NewRTSCamera : MonoBehaviour
     }
     private void Update()
     {
+
         HandleInput();
         Move();
     }
@@ -53,4 +57,5 @@ public class NewRTSCamera : MonoBehaviour
         Gizmos.DrawSphere(transform.position, 1f);
         Gizmos.DrawWireCube(Vector3.zero, new Vector3(_cameraRange.x * 2f, 5f, _cameraRange.y * 2f));
     }
+
 }

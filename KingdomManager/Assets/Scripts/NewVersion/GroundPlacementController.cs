@@ -18,10 +18,12 @@ public class GroundPlacementController : MonoBehaviour
     public bool hasEnoughResources = true;
 
     public ResourceManager manager;
+    public WorldStateManager gameState;
 
     private void Start()
     {
         manager = GameObject.Find("ResourceSystem").GetComponent<ResourceManager>();
+        gameState = GameObject.Find("GameWorld").GetComponent<WorldStateManager>();
     }
     private void Update()
     {
@@ -33,7 +35,7 @@ public class GroundPlacementController : MonoBehaviour
             RotateFromMouseWheel();
             ReleaseIfClicked();
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) && gameState.worldState == WorldStateManager.ResourceType.InBuild)
             {
                 Destroy(currentPlaceableObject);
             }
@@ -56,7 +58,7 @@ public class GroundPlacementController : MonoBehaviour
 
     private void ReleaseIfClicked()
     {
-        if(Input.GetMouseButtonDown(0) && canPlace && hasEnoughResources)
+        if(Input.GetMouseButtonDown(0) && canPlace && hasEnoughResources && gameState.worldState == WorldStateManager.ResourceType.InBuild)
         {
             currentPlaceableObject.GetComponentInChildren<MeshRenderer>().material = currentPlaceableObject.GetComponentInChildren<storedMat>().savedMat;
 
@@ -79,6 +81,7 @@ public class GroundPlacementController : MonoBehaviour
             }
 
             currentPlaceableObject = null;
+            gameState.worldState = WorldStateManager.ResourceType.InGame;
         }
     }
 
@@ -102,18 +105,29 @@ public class GroundPlacementController : MonoBehaviour
     
     public void SelectedObject(int index)
     {
+        if(gameState.worldState == WorldStateManager.ResourceType.InGame)
+        {
+                    gameState.worldState = WorldStateManager.ResourceType.InBuild;
+        Debug.Log("In Build mode");
         currentPlaceableObject = Instantiate(objects[index]);
+        }
+
+
 
     }
     private void updateMaterials()
     {
-        if (canPlace && hasEnoughResources)
+        if(currentPlaceableObject != null)
         {
-            currentPlaceableObject.GetComponentInChildren<MeshRenderer>().material = materials[0];
+            if (canPlace && hasEnoughResources)
+            {
+                currentPlaceableObject.GetComponentInChildren<MeshRenderer>().material = materials[0];
+            }
+            else if (!canPlace || !hasEnoughResources)
+            {
+                currentPlaceableObject.GetComponentInChildren<MeshRenderer>().material = materials[1];
+            }
         }
-        else if (!canPlace || !hasEnoughResources)
-        {
-            currentPlaceableObject.GetComponentInChildren<MeshRenderer>().material = materials[1];
-        }
+
     }
 }
