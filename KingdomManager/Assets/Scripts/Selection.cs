@@ -6,9 +6,11 @@ using TMPro;
 public class Selection : MonoBehaviour
 {
 
-    public GameObject selectedObject;
+    public GameObject selectedObject;    
     public GameObject pannel;
+    public GameObject pannelTree;
     public TextMeshProUGUI objectNameText;
+    public TextMeshProUGUI objectNameTextTree;
     public WorldStateManager gameState;
 
 
@@ -28,6 +30,14 @@ public class Selection : MonoBehaviour
                 if (hit.collider.gameObject.CompareTag("Object") && gameState.worldState == WorldStateManager.ResourceType.InGame)
                 {
                     pannel.gameObject.SetActive(true);
+                    pannelTree.gameObject.SetActive(false);
+                    gameState.worldState = WorldStateManager.ResourceType.InBuildDescription;
+                    Select(hit.collider.gameObject);
+                }
+                if (hit.collider.gameObject.CompareTag("Tree") && gameState.worldState == WorldStateManager.ResourceType.InGame)
+                {
+                    pannel.gameObject.SetActive(false);
+                    pannelTree.gameObject.SetActive(true);
                     gameState.worldState = WorldStateManager.ResourceType.InBuildDescription;
                     Select(hit.collider.gameObject);
                 }
@@ -66,6 +76,7 @@ public class Selection : MonoBehaviour
        
         selectedObject = obj;
         objectNameText.text = obj.name;
+        objectNameTextTree.text = obj.name;
     }
     public void Deselect()
     {
@@ -73,6 +84,7 @@ public class Selection : MonoBehaviour
         selectedObject.GetComponent<Outline>().enabled = false;
         selectedObject = null;
         pannel.gameObject.SetActive(false);
+        pannelTree.gameObject.SetActive(false);
     }
     public void Delete()
     {
@@ -80,6 +92,7 @@ public class Selection : MonoBehaviour
         Deselect();
         Destroy(objectToDestroy);
         pannel.gameObject.SetActive(false);
+        pannelTree.gameObject.SetActive(false);
     }
     public void Upgrade()
     {
